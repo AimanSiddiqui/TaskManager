@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
+import { login } from '../services/authService';
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
 
 function Login() {
   const [username, setUsername] = useState('');
@@ -15,18 +15,7 @@ function Login() {
     setMessage(null);
 
     try {
-      const res = await fetch(`${API_BASE_URL}/api/users/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email:username, password }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.detail || 'Login failed');
-      }
-
-      const data = await res.json();
+      const data = await login(username, password);
       localStorage.setItem('token', data.access_token); // Save token
       navigate('/tasks'); // Redirect to tasks
     } catch (error) {

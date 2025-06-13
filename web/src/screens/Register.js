@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Container, Form, Button, Alert } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
+import { register } from '../services/authService';
 
 function Register() {
   const [email, setEmail] = useState('');
@@ -13,17 +14,7 @@ function Register() {
     setMessage(null);
 
     try {
-      const res = await fetch('/api/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.detail || 'Registration failed');
-      }
-
+      await register(email, password);
       setMessage({ type: 'success', text: 'Registration successful! You can now log in.' });
       setTimeout(() => navigate('/login'), 2000); // Redirect to login
     } catch (error) {
