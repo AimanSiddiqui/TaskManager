@@ -1,3 +1,7 @@
+/**
+ * TaskManager Component
+ * Main component for managing tasks, including task creation and listing
+ */
 import React, { useState, useEffect } from 'react';
 import { Container, Row, Col, Alert, Button, Spinner } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
@@ -7,18 +11,24 @@ import { fetchTasks } from './../services/taskService';
 import { fetchStatuses } from './../services/statusService';
 
 function TaskManager() {
-  const [tasks, setTasks] = useState([]);
-  const [statuses, setStatuses] = useState([]);
-  const [message, setMessage] = useState(null);
-  const [loadingTasks, setLoadingTasks] = useState(false);
-  const [loadingStatuses, setLoadingStatuses] = useState(false);
+  // State management
+  const [tasks, setTasks] = useState([]);          // List of tasks
+  const [statuses, setStatuses] = useState([]);    // List of available statuses
+  const [message, setMessage] = useState(null);    // Alert message state
+  const [loadingTasks, setLoadingTasks] = useState(false);     // Tasks loading state
+  const [loadingStatuses, setLoadingStatuses] = useState(false); // Statuses loading state
   const navigate = useNavigate();
 
+  // Load tasks and statuses on component mount
   useEffect(() => {
     fetchAllTasks();
     fetchAllStatuses();
   }, []);
 
+  /**
+   * Fetch all tasks from the API
+   * Updates tasks state and handles errors
+   */
   const fetchAllTasks = async () => {
     setLoadingTasks(true);
     try {
@@ -32,6 +42,10 @@ function TaskManager() {
     }
   };
 
+  /**
+   * Fetch all statuses from the API
+   * Updates statuses state and handles errors
+   */
   const fetchAllStatuses = async () => {
     setLoadingStatuses(true);
     try {
@@ -46,6 +60,7 @@ function TaskManager() {
 
   return (
     <Container className="mt-4">
+      {/* Header with logout button */}
       <Row>
         <Col>
           <h1>Task Manager</h1>
@@ -63,9 +78,12 @@ function TaskManager() {
         </Col>
       </Row>
 
+      {/* Alert message display */}
       {message && <Alert variant={message.type}>{message.text}</Alert>}
 
+      {/* Main content area */}
       <Row>
+        {/* Task creation form */}
         <Col md={6}>
           <TaskForm
             statuses={statuses}
@@ -74,6 +92,7 @@ function TaskManager() {
             setMessage={setMessage}
           />
         </Col>
+        {/* Task list display */}
         <Col md={6}>
           <TaskList
             tasks={tasks}
